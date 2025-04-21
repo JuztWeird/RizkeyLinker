@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linkerr</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            text-align: center;
+        }
+        input {
+            margin: 5px;
+            padding: 8px;
+            width: 250px;
+        }
+        button {
+            margin: 5px;
+            padding: 10px;
+            background-color: blue;
+            color: white;
+            border-radius: 4px;
+            width: 250px;
+        }
+        button:hover{
+            cursor: pointer;
+        }
+        #displayArea { margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <h1>RizKey Linkerr</h1><br>
+    <h5>Enter Text & Link in respective columns</h5><br>
+    <input type="text" id="textInput" placeholder="Enter text">
+    <input type="url" id="linkInput" placeholder="Enter link"><br>
+    <button onclick="addEntry()">Add</button>
+    <button onclick="continueProcess()">Continue</button>
+
+    <div id="displayArea"></div>
+
+    <script>
+        let entries = [];
+
+        function addEntry() {
+            let text = document.getElementById("textInput").value;
+            let link = document.getElementById("linkInput").value;
+            if (text && link) {
+                entries.push({ text, link });
+                document.getElementById("textInput").value = "";
+                document.getElementById("linkInput").value = "";
+                alert("Entry added: " + text + " -> " + link);
+            } else {
+                alert("Please enter both text and link!");
+            }
+        }
+
+        function continueProcess() {
+            let displayHTML = '';
+            for (let entry of entries) {
+                displayHTML += `<a href="${entry.link}" target="_blank">${entry.text}</a><br>`;
+            }
+
+            document.getElementById("displayArea").innerHTML = displayHTML;
+
+            fetch('/process', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(entries)
+            })
+            
+        }
+    </script>
+</body>
+</html>
